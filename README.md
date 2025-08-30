@@ -1,2 +1,2 @@
 # INNOVATIVE-SCHOOL-
-school applicatio 
+school application 
