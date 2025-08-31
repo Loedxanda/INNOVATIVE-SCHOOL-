@@ -1,13 +1,19 @@
 # Python
-*.pyc
 __pycache__/
-
-# Virtual environment
+*.pyc
+env/
 venv/
+.env
 
-# IDE files
-*.idea/
-*.vscode/
+# Node
+node_modules/
 
-# Logs
+# Environment
+.env
+*.env
+
+# OS
+.DS_Store
+
+# Others
 *.log
