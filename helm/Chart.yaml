@@ -1,0 +1,30 @@
+apiVersion: v2
+name: innovative-school
+description: A Helm chart for Innovative School Platform
+type: application
+version: 0.1.0
+appVersion: "1.0.0"
+keywords:
+  - education
+  - school-management
+  - cameroon
+home: https://github.com/your-username/innovative-school
+sources:
+  - https://github.com/your-username/innovative-school
+maintainers:
+  - name: Your Name
+    email: your.email@example.com
+dependencies:
+  - name: postgresql
+    version: 12.1.2
+    repository: https://charts.bitnami.com/bitnami
+    condition: postgresql.enabled
+  - name: redis
+    version: 17.3.7
+    repository: https://charts.bitnami.com/bitnami
+    condition: redis.enabled
+  - name: nginx-ingress
+    version: 4.4.2
+    repository: https://kubernetes.github.io/ingress-nginx
+    condition: nginx-ingress.enabled
+

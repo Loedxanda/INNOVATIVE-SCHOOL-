@@ -1,0 +1,274 @@
+# Production values for Innovative School Platform
+# This file contains production-specific configurations
+
+# Global settings
+global:
+  environment: production
+  domain: innovativeschool.cm
+  apiDomain: api.innovativeschool.cm
+
+# Backend configuration
+backend:
+  enabled: true
+  replicaCount: 5
+  image:
+    repository: ghcr.io/your-username/innovative-school-backend
+    tag: "v1.0.0"
+    pullPolicy: IfNotPresent
+  
+  service:
+    type: ClusterIP
+    port: 8000
+  
+  resources:
+    limits:
+      cpu: 1000m
+      memory: 2Gi
+    requests:
+      cpu: 500m
+      memory: 1Gi
+  
+  autoscaling:
+    enabled: true
+    minReplicas: 5
+    maxReplicas: 20
+    targetCPUUtilizationPercentage: 60
+    targetMemoryUtilizationPercentage: 70
+  
+  env:
+    DATABASE_URL: "postgresql://postgres:${POSTGRES_PASSWORD}@postgresql:5432/innovative_school"
+    REDIS_URL: "redis://redis:6379/0"
+    ENVIRONMENT: "production"
+    CORS_ORIGINS: "https://innovativeschool.cm,https://www.innovativeschool.cm"
+    LOG_LEVEL: "INFO"
+    WORKERS: "4"
+  
+  secrets:
+    SECRET_KEY: "${SECRET_KEY}"
+    JWT_SECRET_KEY: "${JWT_SECRET_KEY}"
+    GOOGLE_MAPS_API_KEY: "${GOOGLE_MAPS_API_KEY}"
+    AWS_ACCESS_KEY_ID: "${AWS_ACCESS_KEY_ID}"
+    AWS_SECRET_ACCESS_KEY: "${AWS_SECRET_ACCESS_KEY}"
+    SENDGRID_API_KEY: "${SENDGRID_API_KEY}"
+    TWILIO_ACCOUNT_SID: "${TWILIO_ACCOUNT_SID}"
+    TWILIO_AUTH_TOKEN: "${TWILIO_AUTH_TOKEN}"
+
+# Frontend configuration
+frontend:
+  enabled: true
+  replicaCount: 3
+  image:
+    repository: ghcr.io/your-username/innovative-school-frontend
+    tag: "v1.0.0"
+    pullPolicy: IfNotPresent
+  
+  service:
+    type: ClusterIP
+    port: 80
+  
+  resources:
+    limits:
+      cpu: 500m
+      memory: 512Mi
+    requests:
+      cpu: 250m
+      memory: 256Mi
+  
+  autoscaling:
+    enabled: true
+    minReplicas: 3
+    maxReplicas: 10
+    targetCPUUtilizationPercentage: 70
+  
+  env:
+    REACT_APP_API_URL: "https://api.innovativeschool.cm"
+    REACT_APP_GOOGLE_MAPS_API_KEY: "${GOOGLE_MAPS_API_KEY}"
+    REACT_APP_ENVIRONMENT: "production"
+    REACT_APP_SENTRY_DSN: "${SENTRY_DSN}"
+
+# PostgreSQL configuration
+postgresql:
+  enabled: true
+  auth:
+    postgresPassword: "${POSTGRES_PASSWORD}"
+    database: "innovative_school"
+  primary:
+    persistence:
+      enabled: true
+      size: 100Gi
+      storageClass: "fast-ssd"
+    resources:
+      limits:
+        cpu: 2000m
+        memory: 4Gi
+      requests:
+        cpu: 1000m
+        memory: 2Gi
+    configuration: |
+      max_connections = 200
+      shared_buffers = 1GB
+      effective_cache_size = 3GB
+      maintenance_work_mem = 256MB
+      checkpoint_completion_target = 0.9
+      wal_buffers = 16MB
+      default_statistics_target = 100
+      random_page_cost = 1.1
+      effective_io_concurrency = 200
+      work_mem = 4MB
+      min_wal_size = 1GB
+      max_wal_size = 4GB
+
+# Redis configuration
+redis:
+  enabled: true
+  auth:
+    enabled: false
+  master:
+    persistence:
+      enabled: true
+      size: 20Gi
+      storageClass: "fast-ssd"
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+      requests:
+        cpu: 500m
+        memory: 1Gi
+    configuration: |
+      maxmemory 1536mb
+      maxmemory-policy allkeys-lru
+      save 900 1
+      save 300 10
+      save 60 10000
+      tcp-keepalive 60
+      timeout 300
+
+# Nginx Ingress Controller
+nginx-ingress:
+  enabled: true
+  controller:
+    service:
+      type: LoadBalancer
+      annotations:
+        service.beta.kubernetes.io/aws-load-balancer-type: "nlb"
+        service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 1Gi
+      requests:
+        cpu: 500m
+        memory: 512Mi
+    config:
+      worker-processes: "auto"
+      worker-connections: "1024"
+      keep-alive-requests: "1000"
+      keep-alive-timeout: "65"
+      client-max-body-size: "10m"
+      proxy-connect-timeout: "60"
+      proxy-send-timeout: "60"
+      proxy-read-timeout: "60"
+      proxy-buffering: "on"
+      proxy-buffer-size: "4k"
+      proxy-buffers: "8 4k"
+      proxy-busy-buffers-size: "8k"
+
+# Monitoring
+monitoring:
+  enabled: true
+  prometheus:
+    enabled: true
+    server:
+      resources:
+        limits:
+          cpu: 1000m
+          memory: 2Gi
+        requests:
+          cpu: 500m
+          memory: 1Gi
+      retention: "30d"
+      storage:
+        size: 50Gi
+        storageClass: "fast-ssd"
+  
+  grafana:
+    enabled: true
+    adminPassword: "${GRAFANA_ADMIN_PASSWORD}"
+    resources:
+      limits:
+        cpu: 500m
+        memory: 1Gi
+      requests:
+        cpu: 250m
+        memory: 512Mi
+    persistence:
+      enabled: true
+      size: 10Gi
+      storageClass: "fast-ssd"
+
+# Logging
+logging:
+  enabled: true
+  elasticsearch:
+    enabled: true
+    resources:
+      limits:
+        cpu: 1000m
+        memory: 2Gi
+      requests:
+        cpu: 500m
+        memory: 1Gi
+    persistence:
+      enabled: true
+      size: 50Gi
+      storageClass: "fast-ssd"
+  
+  kibana:
+    enabled: true
+    resources:
+      limits:
+        cpu: 500m
+        memory: 1Gi
+      requests:
+        cpu: 250m
+        memory: 512Mi
+
+# Security
+security:
+  podSecurityPolicy:
+    enabled: true
+  networkPolicy:
+    enabled: true
+  rbac:
+    enabled: true
+  serviceAccount:
+    create: true
+    annotations:
+      eks.amazonaws.com/role-arn: "arn:aws:iam::ACCOUNT_ID:role/innovative-school-role"
+
+# Backup
+backup:
+  enabled: true
+  schedule: "0 2 * * *"  # Daily at 2 AM
+  retention: "30d"
+  s3:
+    bucket: "innovative-school-backups"
+    region: "us-west-2"
+    prefix: "production/"
+
+# Alerting
+alerting:
+  enabled: true
+  slack:
+    webhook: "${SLACK_WEBHOOK_URL}"
+    channel: "#alerts"
+  email:
+    smtp:
+      host: "smtp.sendgrid.net"
+      port: 587
+      username: "apikey"
+      password: "${SENDGRID_API_KEY}"
+    from: "alerts@innovativeschool.cm"
+    to: "admin@innovativeschool.cm"
+

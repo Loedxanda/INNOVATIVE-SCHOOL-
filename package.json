@@ -1,0 +1,62 @@
+{
+  "name": "innovative-school-platform",
+  "version": "0.1.0",
+  "description": "AI-powered, multilingual school management platform for Cameroon",
+  "private": true,
+  "workspaces": [
+    "frontend",
+    "backend"
+  ],
+  "scripts": {
+    "install:all": "npm install && cd frontend && npm install && cd ../backend && pip install -r requirements.txt",
+    "start": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "start:frontend": "cd frontend && npm start",
+    "start:backend": "cd backend && python main_simple.py",
+    "build": "cd frontend && npm run build",
+    "test": "npm run test:frontend && npm run test:backend",
+    "test:frontend": "cd frontend && npm test",
+    "test:backend": "cd backend && python -m pytest tests/ -v",
+    "test:e2e": "cd frontend && npm run cypress:run",
+    "lint": "cd frontend && npm run lint",
+    "type-check": "cd frontend && npm run type-check",
+    "setup": "npm run install:all && npm run create:admin",
+    "create:admin": "python create_admin.py",
+    "dev": "concurrently \"npm run start:backend\" \"npm run start:frontend\"",
+    "docker:up": "docker-compose up -d",
+    "docker:down": "docker-compose down",
+    "docker:build": "docker-compose build",
+    "clean": "rimraf frontend/node_modules frontend/build backend/__pycache__ backend/.pytest_cache",
+    "reset": "npm run clean && npm run install:all"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.2",
+    "rimraf": "^5.0.5"
+  },
+  "engines": {
+    "node": ">=16.0.0",
+    "npm": ">=8.0.0",
+    "python": ">=3.8.0"
+  },
+  "keywords": [
+    "school-management",
+    "education",
+    "cameroon",
+    "multilingual",
+    "ai-powered",
+    "react",
+    "fastapi",
+    "postgresql"
+  ],
+  "author": "Innovative School Platform Team",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/innovative-school-platform.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-org/innovative-school-platform/issues"
+  },
+  "homepage": "https://github.com/your-org/innovative-school-platform#readme"
+}
+
+

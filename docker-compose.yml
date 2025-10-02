@@ -1,0 +1,144 @@
+version: '3.8'
+
+services:
+  postgres:
+    image: postgis/postgis:15-3.3
+    container_name: innovative_school_postgres
+    environment:
+      POSTGRES_DB: innovative_school
+      POSTGRES_USER: innovative_school_user
+      POSTGRES_PASSWORD: innovative_school_password
+      POSTGRES_INITDB_ARGS: "--encoding=UTF-8 --lc-collate=C --lc-ctype=C"
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-scripts:/docker-entrypoint-initdb.d
+    networks:
+      - innovative_school_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U innovative_school_user -d innovative_school"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  redis:
+    image: redis:7-alpine
+    container_name: innovative_school_redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - innovative_school_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  backend:
+    build: 
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: innovative_school_backend
+    environment:
+      - DATABASE_URL=postgresql://innovative_school_user:innovative_school_password@postgres:5432/innovative_school
+      - REDIS_URL=redis://redis:6379
+      - ENVIRONMENT=development
+      - SECRET_KEY=dev_secret_key_change_in_production
+      - ALGORITHM=HS256
+      - ACCESS_TOKEN_EXPIRE_MINUTES=60
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    volumes:
+      - ./backend:/app
+      - /app/__pycache__
+    networks:
+      - innovative_school_network
+    restart: unless-stopped
+    command: uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  pedagogic-ai:
+    build: 
+      context: ./ai_services/pedagogic_ai
+      dockerfile: Dockerfile
+    container_name: innovative_school_pedagogic_ai
+    ports:
+      - "8001:8001"
+    volumes:
+      - ./ai_services/pedagogic_ai:/app
+      - /app/__pycache__
+    networks:
+      - innovative_school_network
+    restart: unless-stopped
+    command: uvicorn main:app --host 0.0.0.0 --port 8001 --reload
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/api/ai/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  frontend:
+    build:
+      context: .
+      dockerfile: frontend/Dockerfile
+    container_name: innovative_school_frontend
+    environment:
+      - REACT_APP_API_URL=http://localhost:8000
+      - REACT_APP_AI_API_URL=http://localhost:8001
+      - REACT_APP_ENVIRONMENT=development
+    ports:
+      - "3000:3000"
+    depends_on:
+      - backend
+      - pedagogic-ai
+    volumes:
+      - ./frontend:/app
+      - /app/node_modules
+    networks:
+      - innovative_school_network
+    restart: unless-stopped
+    command: npm start
+
+  nginx:
+    image: nginx:alpine
+    container_name: innovative_school_nginx
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf
+      - ./nginx/ssl:/etc/nginx/ssl
+    depends_on:
+      - frontend
+      - backend
+      - pedagogic-ai
+    networks:
+      - innovative_school_network
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  redis_data:
+    driver: local
+
+networks:
+  innovative_school_network:
+    driver: bridge
+    ipam:
+      config:
+        - subnet: 172.20.0.0/16

@@ -5,9 +5,10 @@ from fastapi import Depends, HTTPException, status
 from jose import JWTError, jwt
 from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordBearer
+from sqlalchemy.orm import Session
 
-from .models import UserOut
-from .user_store import get_user_by_email
+from models import UserOut
+from database import get_db
 
 SECRET_KEY = "supersecretkey"  # For production, load from environment variable!
 ALGORITHM = "HS256"
@@ -22,8 +23,9 @@ def verify_password(plain_password, hashed_password):
 def get_password_hash(password):
     return pwd_context.hash(password)
 
-def authenticate_user(email: str, password: str):
-    user_obj = get_user_by_email(email)
+def authenticate_user(email: str, password: str, db: Session = Depends(get_db)):
+    db_service = DatabaseService(db)
+    user_obj = db_service.get_user_by_email(email)
     if not user_obj or not hasattr(user_obj, "hashed_password"):
         return None
     if not verify_password(password, user_obj.hashed_password):
@@ -37,7 +39,7 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None):
     encoded_jwt = jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-def get_current_user(token: str = Depends(oauth2_scheme)):
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Could not validate credentials",
@@ -51,7 +53,9 @@ def get_current_user(token: str = Depends(oauth2_scheme)):
             raise credentials_exception
     except JWTError:
         raise credentials_exception
-    user_obj = get_user_by_email(email)
+    
+    db_service = DatabaseService(db)
+    user_obj = db_service.get_user_by_email(email)
     if user_obj is None:
         raise credentials_exception
     return user_obj

@@ -1,0 +1,66 @@
+version: '3.8'
+
+services:
+  backup-scheduler:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: innovative-school-backup-scheduler
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=innovative_school
+      - DB_USER=postgres
+      - DB_PASSWORD=password
+      - BACKUP_DIR=/app/backups
+      - RETENTION_DAYS=30
+      - S3_BUCKET=${S3_BUCKET:-}
+      - S3_REGION=${S3_REGION:-us-east-1}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
+    volumes:
+      - ./backups:/app/backups
+      - ./uploads:/app/uploads
+      - ./static:/app/static
+      - ./logs:/app/logs
+    depends_on:
+      - postgres
+    command: python /app/scripts/backup_script.py schedule
+    restart: unless-stopped
+    networks:
+      - school-network
+
+  backup-manager:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    container_name: innovative-school-backup-manager
+    environment:
+      - DB_HOST=postgres
+      - DB_PORT=5432
+      - DB_NAME=innovative_school
+      - DB_USER=postgres
+      - DB_PASSWORD=password
+      - BACKUP_DIR=/app/backups
+      - RETENTION_DAYS=30
+      - S3_BUCKET=${S3_BUCKET:-}
+      - S3_REGION=${S3_REGION:-us-east-1}
+      - AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID:-}
+      - AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY:-}
+    volumes:
+      - ./backups:/app/backups
+      - ./uploads:/app/uploads
+      - ./static:/app/static
+      - ./logs:/app/logs
+    depends_on:
+      - postgres
+    command: python /app/scripts/backup_script.py list
+    profiles:
+      - management
+    networks:
+      - school-network
+
+networks:
+  school-network:
+    external: true
+

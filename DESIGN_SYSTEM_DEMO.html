@@ -1,0 +1,700 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Innovative School Platform - Design System Demo</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /*
+         * Design System CSS for Innovative School Platform
+         * Implements Oxblood and Blue gradient theme with motion effects
+         */
+
+        /* Color Palette Variables */
+        :root {
+            /* Primary Colors */
+            --oxblood: #4A0000;
+            --oxblood-light: #7A3030;
+            --oxblood-dark: #1A0000;
+            
+            --deep-blue: #001F3F;
+            --deep-blue-light: #334A66;
+            --deep-blue-dark: #000A1A;
+            
+            /* Secondary Colors */
+            --light-blue: #7FDBFF;
+            --light-blue-light: #B2E9FF;
+            --light-blue-dark: #4BA8CC;
+            
+            --off-white: #F5F5F5;
+            --white: #FFFFFF;
+            --off-white-dark: #C2C2C2;
+            
+            /* Gradients */
+            --oxblood-gradient: linear-gradient(135deg, #4A0000 0%, #001F3F 100%);
+            --vertical-nav-gradient: linear-gradient(to bottom, #4A0000 0%, #001F3F 100%);
+            --horizontal-header-gradient: linear-gradient(to right, #4A0000 0%, #001F3F 100%);
+            
+            /* Transitions */
+            --transition-standard: all 250ms cubic-bezier(0.4, 0, 0.2, 1);
+            --transition-fast: all 200ms ease;
+            --transition-slow: all 300ms cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        /* Base Styles */
+        body {
+            background-color: var(--deep-blue);
+            color: var(--off-white);
+            font-family: 'Roboto', 'Segoe UI', sans-serif;
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+        }
+
+        /* Typography */
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--off-white);
+            margin: 0 0 1rem 0;
+        }
+
+        h2 {
+            font-size: 2rem;
+            font-weight: 600;
+            color: var(--off-white);
+            margin: 0 0 1rem 0;
+        }
+
+        h3 {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--off-white);
+            margin: 0 0 0.5rem 0;
+        }
+
+        h4 {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--off-white);
+            margin: 0 0 0.5rem 0;
+        }
+
+        p {
+            font-size: 1rem;
+            font-weight: 400;
+            color: var(--off-white);
+            line-height: 1.5;
+            margin: 0 0 1rem 0;
+        }
+
+        .caption {
+            font-size: 0.875rem;
+            font-weight: 400;
+            color: var(--light-blue);
+            margin: 0 0 0.5rem 0;
+        }
+
+        .small-text {
+            font-size: 0.75rem;
+            font-weight: 400;
+            color: var(--light-blue);
+        }
+
+        /* Buttons */
+        .btn {
+            padding: 12px 24px;
+            border-radius: 4px;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            transition: var(--transition-standard);
+            text-transform: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Roboto', 'Segoe UI', sans-serif;
+            font-size: 1rem;
+        }
+
+        .btn-primary {
+            background: var(--oxblood);
+            color: var(--off-white);
+        }
+
+        .btn-primary:hover {
+            background: var(--oxblood-dark);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 4px 12px rgba(74, 0, 0, 0.3);
+        }
+
+        .btn-secondary {
+            background: var(--light-blue);
+            color: var(--deep-blue);
+        }
+
+        .btn-secondary:hover {
+            background: var(--light-blue-dark);
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 4px 12px rgba(127, 219, 255, 0.3);
+        }
+
+        .btn-ask-ai {
+            background: var(--oxblood-gradient);
+            color: var(--off-white);
+        }
+
+        .btn-ask-ai:hover {
+            transform: translateY(-2px) scale(1.02);
+            box-shadow: 0 4px 15px rgba(74, 0, 0, 0.4);
+        }
+
+        /* Cards */
+        .card {
+            background: rgba(0, 31, 63, 0.7);
+            border: 1px solid rgba(127, 219, 255, 0.2);
+            border-radius: 8px;
+            padding: 16px;
+            transition: var(--transition-standard);
+        }
+
+        .card:hover {
+            transform: translateY(-2px) scale(1.01);
+            box-shadow: 0 4px 12px rgba(74, 0, 0, 0.2);
+            border-color: rgba(127, 219, 255, 0.4);
+        }
+
+        /* Navigation */
+        .side-nav {
+            background: var(--vertical-nav-gradient);
+            color: var(--off-white);
+            width: 250px;
+            height: 100vh;
+            padding: 20px 0;
+            position: fixed;
+            top: 0;
+            left: 0;
+            overflow-y: auto;
+            box-sizing: border-box;
+        }
+
+        .nav-header {
+            padding: 0 20px 20px;
+            border-bottom: 1px solid rgba(127, 219, 255, 0.2);
+        }
+
+        .nav-header h2 {
+            color: white;
+            margin: 0 0 20px;
+        }
+
+        .nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .nav-item {
+            padding: 12px 20px;
+            margin: 4px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: var(--transition-fast);
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-item:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-item.active {
+            background: rgba(255, 255, 255, 0.15);
+            border-left: 3px solid var(--off-white);
+        }
+
+        .nav-item.active:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .nav-icon {
+            margin-right: 12px;
+            font-size: 1.2rem;
+        }
+
+        /* Inputs and Forms */
+        .text-input {
+            background: rgba(0, 31, 63, 0.5);
+            border: 1px solid rgba(127, 219, 255, 0.3);
+            border-radius: 4px;
+            padding: 10px 12px;
+            color: var(--off-white);
+            font-size: 1rem;
+            transition: var(--transition-fast);
+            width: 100%;
+            box-sizing: border-box;
+            font-family: 'Roboto', 'Segoe UI', sans-serif;
+        }
+
+        .text-input:focus {
+            outline: none;
+            border-color: var(--light-blue);
+            box-shadow: 0 0 0 2px rgba(127, 219, 255, 0.2);
+        }
+
+        /* App Bar / Header */
+        .app-header {
+            background: var(--horizontal-header-gradient);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+            padding: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        /* Chips */
+        .chip {
+            background: rgba(0, 31, 63, 0.5);
+            color: var(--light-blue);
+            border: 1px solid rgba(127, 219, 255, 0.3);
+            border-radius: 16px;
+            padding: 4px 12px;
+            font-size: 0.875rem;
+            display: inline-flex;
+            align-items: center;
+        }
+
+        .chip.ml-2 {
+            margin-left: 8px;
+        }
+
+        /* Rating */
+        .rating-filled {
+            color: var(--oxblood);
+        }
+
+        .rating-empty {
+            color: rgba(127, 219, 255, 0.3);
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(74, 0, 0, 0.7);
+            }
+            70% {
+                box-shadow: 0 0 0 10px rgba(74, 0, 0, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(74, 0, 0, 0);
+            }
+        }
+
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+
+        /* Loader */
+        .loader {
+            border: 4px solid rgba(127, 219, 255, 0.3);
+            border-top: 4px solid var(--oxblood);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Grid System */
+        .container {
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        .grid {
+            display: grid;
+            gap: 16px;
+        }
+
+        .grid-cols-1 {
+            grid-template-columns: 1fr;
+        }
+
+        .grid-cols-2 {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .grid-cols-3 {
+            grid-template-columns: repeat(3, 1fr);
+        }
+
+        .grid-cols-4 {
+            grid-template-columns: repeat(4, 1fr);
+        }
+
+        /* Utility Classes */
+        .text-center {
+            text-align: center;
+        }
+
+        .flex {
+            display: flex;
+        }
+
+        .items-center {
+            align-items: center;
+        }
+
+        .justify-between {
+            justify-content: space-between;
+        }
+
+        .justify-center {
+            justify-content: center;
+        }
+
+        .gap-2 {
+            gap: 8px;
+        }
+
+        .gap-4 {
+            gap: 16px;
+        }
+
+        .gap-6 {
+            gap: 24px;
+        }
+
+        .mt-2 {
+            margin-top: 8px;
+        }
+
+        .mt-4 {
+            margin-top: 16px;
+        }
+
+        .mt-6 {
+            margin-top: 24px;
+        }
+
+        .mb-2 {
+            margin-bottom: 8px;
+        }
+
+        .mb-4 {
+            margin-bottom: 16px;
+        }
+
+        .mb-6 {
+            margin-bottom: 24px;
+        }
+
+        .p-2 {
+            padding: 8px;
+        }
+
+        .p-4 {
+            padding: 16px;
+        }
+
+        .p-6 {
+            padding: 24px;
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: 250px;
+            padding: 20px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .side-nav {
+                width: 70px;
+            }
+            
+            .nav-item span:not(.nav-icon) {
+                display: none;
+            }
+            
+            .nav-header h2 {
+                font-size: 1rem;
+                text-align: center;
+            }
+            
+            .main-content {
+                margin-left: 70px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div style="display: flex; min-height: 100vh;">
+        <!-- Side Navigation -->
+        <nav class="side-nav">
+            <div class="nav-header">
+                <h2>School Platform</h2>
+            </div>
+            <ul class="nav-list">
+                <li class="nav-item active">
+                    <span class="nav-icon">📊</span>
+                    <span>Dashboard</span>
+                </li>
+                <li class="nav-item">
+                    <span class="nav-icon">📚</span>
+                    <span>Resource Hub</span>
+                </li>
+                <li class="nav-item">
+                    <span class="nav-icon">💬</span>
+                    <span>Messages</span>
+                </li>
+                <li class="nav-item">
+                    <span class="nav-icon">🤖</span>
+                    <span>AI Assistant</span>
+                </li>
+                <li class="nav-item">
+                    <span class="nav-icon">📋</span>
+                    <span>Inquiries</span>
+                </li>
+                <li class="nav-item">
+                    <span class="nav-icon">📈</span>
+                    <span>Reports</span>
+                </li>
+            </ul>
+        </nav>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="app-header">
+                <h1>Design System Demo</h1>
+                <div>
+                    <span class="chip">Admin</span>
+                </div>
+            </header>
+
+            <!-- Dashboard Content -->
+            <div class="container mt-6">
+                <h2>Dashboard Overview</h2>
+                
+                <!-- Stats Cards -->
+                <div class="grid grid-cols-1 grid-cols-2 grid-cols-4 gap-4 mt-4">
+                    <div class="card">
+                        <h3>Resources</h3>
+                        <p class="caption">124 total resources</p>
+                        <div class="mt-4">
+                            <span class="chip">Mathematics</span>
+                            <span class="chip ml-2">Science</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Messages</h3>
+                        <p class="caption">5 unread messages</p>
+                        <div class="mt-4">
+                            <span class="chip pulse">New</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>Inquiries</h3>
+                        <p class="caption">8 pending inquiries</p>
+                        <div class="mt-4">
+                            <span class="chip">High Priority</span>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <h3>AI Interactions</h3>
+                        <p class="caption">24 this week</p>
+                        <div class="mt-4">
+                            <button class="btn btn-ask-ai">Ask AI Assistant</button>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Resource Hub Preview -->
+                <div class="mt-6">
+                    <div class="flex justify-between items-center">
+                        <h2>Resource Hub</h2>
+                        <button class="btn btn-primary">Upload Resource</button>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 grid-cols-2 grid-cols-3 gap-4 mt-4">
+                        <div class="card">
+                            <h3>Mathematics Lesson Plan</h3>
+                            <p class="caption">Comprehensive lesson plan for algebra basics</p>
+                            <div class="mt-4">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <span class="chip">Secondary 2</span>
+                                        <span class="chip ml-2">Lesson Plan</span>
+                                    </div>
+                                    <div>
+                                        <!-- Rating component -->
+                                        <div class="flex">
+                                            <span class="rating-filled" style="font-size: 1.2rem;">★</span>
+                                            <span class="rating-filled" style="font-size: 1.2rem;">★</span>
+                                            <span class="rating-filled" style="font-size: 1.2rem;">★</span>
+                                            <span class="rating-filled" style="font-size: 1.2rem;">★</span>
+                                            <span class="rating-empty" style="font-size: 1.2rem;">★</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <h3>Science Experiment Guide</h3>
+                            <p class="caption">Step-by-step guide for chemistry experiments</p>
+                            <div class="mt-4">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <span class="chip">Secondary 3</span>
+                                        <span class="chip ml-2">Worksheet</span>
+                                    </div>
+                                    <div>
+                                        <!-- Rating component -->
+                                        <div class="flex">
+                                            <span class="rating-filled" style="font-size: 1.2rem;">★</span>
+                                            <span class="rating-filled" style="font-size: 1.2rem;">★</span>
+                                            <span class="rating-filled" style="font-size: 1.2rem;">★</span>
+                                            <span class="rating-filled" style="font-size: 1.2rem;">★</span>
+                                            <span class="rating-filled" style="font-size: 1.2rem;">★</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <h3>English Literature Notes</h3>
+                            <p class="caption">Character analysis for Shakespeare's works</p>
+                            <div class="mt-4">
+                                <div class="flex justify-between items-center">
+                                    <div>
+                                        <span class="chip">Secondary 4</span>
+                                        <span class="chip ml-2">Notes</span>
+                                    </div>
+                                    <div>
+                                        <!-- Rating component -->
+                                        <div class="flex">
+                                            <span class="rating-filled" style="font-size: 1.2rem;">★</span>
+                                            <span class="rating-filled" style="font-size: 1.2rem;">★</span>
+                                            <span class="rating-filled" style="font-size: 1.2rem;">★</span>
+                                            <span class="rating-empty" style="font-size: 1.2rem;">★</span>
+                                            <span class="rating-empty" style="font-size: 1.2rem;">★</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Messaging Preview -->
+                <div class="mt-6">
+                    <h2>Recent Messages</h2>
+                    
+                    <div class="grid grid-cols-1 gap-4 mt-4">
+                        <div class="card">
+                            <div class="flex justify-between">
+                                <h3>John Teacher</h3>
+                                <span class="caption">2 hours ago</span>
+                            </div>
+                            <p class="mt-2">Let's schedule a meeting for tomorrow to discuss the new curriculum.</p>
+                            <div class="mt-4">
+                                <button class="btn btn-secondary">Reply</button>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="flex justify-between">
+                                <h3>Sarah Admin</h3>
+                                <span class="caption">1 day ago</span>
+                            </div>
+                            <p class="mt-2">The quarterly reports are ready for review. Please check when you have time.</p>
+                            <div class="mt-4">
+                                <button class="btn btn-secondary">Reply</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        // Simple interactivity for demo purposes
+        document.addEventListener('DOMContentLoaded', function() {
+            // Add hover effects to cards
+            const cards = document.querySelectorAll('.card');
+            cards.forEach(card => {
+                card.addEventListener('mouseenter', function() {
+                    this.style.transform = 'translateY(-2px) scale(1.01)';
+                    this.style.boxShadow = '0 4px 12px rgba(74, 0, 0, 0.2)';
+                    this.style.borderColor = 'rgba(127, 219, 255, 0.4)';
+                });
+                
+                card.addEventListener('mouseleave', function() {
+                    this.style.transform = '';
+                    this.style.boxShadow = '';
+                    this.style.borderColor = 'rgba(127, 219, 255, 0.2)';
+                });
+            });
+            
+            // Add hover effects to buttons
+            const buttons = document.querySelectorAll('.btn');
+            buttons.forEach(button => {
+                button.addEventListener('mouseenter', function() {
+                    if (this.classList.contains('btn-primary')) {
+                        this.style.background = '#1A0000';
+                        this.style.transform = 'translateY(-2px) scale(1.02)';
+                        this.style.boxShadow = '0 4px 12px rgba(74, 0, 0, 0.3)';
+                    } else if (this.classList.contains('btn-secondary')) {
+                        this.style.background = '#4BA8CC';
+                        this.style.transform = 'translateY(-2px) scale(1.02)';
+                        this.style.boxShadow = '0 4px 12px rgba(127, 219, 255, 0.3)';
+                    } else if (this.classList.contains('btn-ask-ai')) {
+                        this.style.transform = 'translateY(-2px) scale(1.02)';
+                        this.style.boxShadow = '0 4px 15px rgba(74, 0, 0, 0.4)';
+                    }
+                });
+                
+                button.addEventListener('mouseleave', function() {
+                    if (this.classList.contains('btn-primary')) {
+                        this.style.background = '#4A0000';
+                        this.style.transform = '';
+                        this.style.boxShadow = '';
+                    } else if (this.classList.contains('btn-secondary')) {
+                        this.style.background = '#7FDBFF';
+                        this.style.transform = '';
+                        this.style.boxShadow = '';
+                    } else if (this.classList.contains('btn-ask-ai')) {
+                        this.style.transform = '';
+                        this.style.boxShadow = '';
+                    }
+                });
+            });
+            
+            // Add click effect to nav items
+            const navItems = document.querySelectorAll('.nav-item');
+            navItems.forEach(item => {
+                item.addEventListener('click', function() {
+                    navItems.forEach(i => i.classList.remove('active'));
+                    this.classList.add('active');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

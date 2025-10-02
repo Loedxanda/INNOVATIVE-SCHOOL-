@@ -1,0 +1,133 @@
+version: '3.8'
+
+services:
+  learning-analytics:
+    build:
+      context: .
+      dockerfile: learning_analytics/Dockerfile
+    container_name: ai_learning_analytics
+    environment:
+      - SERVICE_NAME=learning-analytics
+      - API_PORT=8001
+      - DATABASE_URL=postgresql://innovative_school_user:innovative_school_password@postgres:5432/innovative_school
+      - REDIS_URL=redis://redis:6379
+      - MAIN_API_URL=http://backend:8000
+    ports:
+      - "8001:8001"
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - ai_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8001/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  nlp-service:
+    build:
+      context: .
+      dockerfile: nlp/Dockerfile
+    container_name: ai_nlp_service
+    environment:
+      - SERVICE_NAME=nlp-service
+      - API_PORT=8002
+      - DATABASE_URL=postgresql://innovative_school_user:innovative_school_password@postgres:5432/innovative_school
+      - REDIS_URL=redis://redis:6379
+      - MAIN_API_URL=http://backend:8000
+    ports:
+      - "8002:8002"
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - ai_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8002/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  computer-vision:
+    build:
+      context: .
+      dockerfile: computer_vision/Dockerfile
+    container_name: ai_computer_vision
+    environment:
+      - SERVICE_NAME=computer-vision
+      - API_PORT=8003
+      - DATABASE_URL=postgresql://innovative_school_user:innovative_school_password@postgres:5432/innovative_school
+      - REDIS_URL=redis://redis:6379
+      - MAIN_API_URL=http://backend:8000
+    ports:
+      - "8003:8003"
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - ai_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8003/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  recommendations:
+    build:
+      context: .
+      dockerfile: recommendations/Dockerfile
+    container_name: ai_recommendations
+    environment:
+      - SERVICE_NAME=recommendations
+      - API_PORT=8004
+      - DATABASE_URL=postgresql://innovative_school_user:innovative_school_password@postgres:5432/innovative_school
+      - REDIS_URL=redis://redis:6379
+      - MAIN_API_URL=http://backend:8000
+    ports:
+      - "8004:8004"
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - ai_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8004/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  predictive-analytics:
+    build:
+      context: .
+      dockerfile: predictive_analytics/Dockerfile
+    container_name: ai_predictive_analytics
+    environment:
+      - SERVICE_NAME=predictive-analytics
+      - API_PORT=8005
+      - DATABASE_URL=postgresql://innovative_school_user:innovative_school_password@postgres:5432/innovative_school
+      - REDIS_URL=redis://redis:6379
+      - MAIN_API_URL=http://backend:8000
+    ports:
+      - "8005:8005"
+    depends_on:
+      - postgres
+      - redis
+    networks:
+      - ai_network
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8005/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+networks:
+  ai_network:
+    driver: bridge
+    external: false
+

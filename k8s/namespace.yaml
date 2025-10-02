@@ -1,0 +1,8 @@
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: innovative-school
+  labels:
+    name: innovative-school
+    environment: production
+
