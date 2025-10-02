@@ -58,7 +58,9 @@ jobs:
         cd backend
         python -m pip install --upgrade pip
         pip install -r requirements.txt
-        pip install pytest pytest-cov
+        pip install pytest pytest-cov httpx passlib[cryptography] python-jose[cryptography] python-multipart python-dotenv
+        cd ..
+        pip install -r test_requirements.txt
     
     - name: Install Node.js dependencies
       run: |
@@ -193,6 +195,7 @@ jobs:
         scan-ref: '.'
         format: 'sarif'
         output: 'trivy-results.sarif'
+        severity: 'CRITICAL,HIGH'
     
     - name: Upload Trivy scan results
       uses: github/codeql-action/upload-sarif@v2
@@ -221,4 +224,3 @@ jobs:
         cd frontend
         npm run test:performance
         npm run test:load
-

@@ -8,11 +8,15 @@ from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.pool import StaticPool
+from passlib.context import CryptContext
 
 from main import app
 from database import get_db, Base
 from models import User, Student, Teacher, Parent, Class, Subject
 
+
+# Create password context
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 # Test database URL
 SQLALCHEMY_DATABASE_URL = "sqlite:///./test.db"
@@ -72,10 +76,10 @@ def client(db_session):
 
 @pytest.fixture
 def test_user(db_session):
-    """Create a test user."""
+    """Create a test user with proper password hashing."""
     user = User(
         email="test@example.com",
-        hashed_password="hashed_password",
+        hashed_password=pwd_context.hash("password123"),
         full_name="Test User",
         role="admin"
     )
@@ -156,9 +160,21 @@ def test_subject(db_session):
 @pytest.fixture
 def auth_headers(client, test_user):
     """Get authentication headers for test user."""
-    # This would normally involve getting a JWT token
-    # For now, we'll return empty headers
-    return {"Authorization": "Bearer test_token"}
+    # Create a proper JWT token for testing
+    import jwt
+    from datetime import datetime, timedelta
+    import os
+    
+    SECRET_KEY = os.getenv("SECRET_KEY", "test_secret_key")
+    ALGORITHM = "HS256"
+    
+    token_data = {
+        "sub": test_user.email,
+        "exp": datetime.utcnow() + timedelta(minutes=30)
+    }
+    
+    token = jwt.encode(token_data, SECRET_KEY, algorithm=ALGORITHM)
+    return {"Authorization": f"Bearer {token}"}
 
 
 @pytest.fixture
@@ -215,4 +231,3 @@ def sample_subject_data():
         "grade_levels": ["grade_11"],
         "credits": 3
     }
-
