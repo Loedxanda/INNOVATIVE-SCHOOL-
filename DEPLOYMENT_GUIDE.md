@@ -1,6 +1,6 @@
 # Innovative School Platform - Deployment Guide
 
-This guide covers deploying the Innovative School Platform using Docker containers for both development and production environments.
+This guide covers deploying the Innovative School Platform using Docker containers for both development and production environments, as well as alternative deployment options including Vercel for the frontend.
 
 ## Prerequisites
 
@@ -132,6 +132,86 @@ docker-compose -f docker-compose.prod.yml ps
 # View logs
 docker-compose -f docker-compose.prod.yml logs -f
 ```
+
+## Vercel Deployment (Frontend Only)
+
+For deploying only the frontend to Vercel while keeping the backend on your own server:
+
+### 1. Prerequisites
+
+1. A Vercel account (free at [vercel.com](https://vercel.com))
+2. Backend API deployed and accessible via HTTPS
+3. Custom domain (optional but recommended)
+
+### 2. Prepare Your Project
+
+1. Create a `.env.production` file in the frontend directory:
+   ```env
+   REACT_APP_API_URL=https://your-backend-domain.com
+   REACT_APP_ENVIRONMENT=production
+   REACT_APP_ENABLE_DEBUG=false
+   ```
+
+2. Update the `frontend/vercel.json` file with your backend domain:
+   ```json
+   {
+     "routes": [
+       {
+         "src": "/api/(.*)",
+         "dest": "https://your-backend-domain.com/api/$1"
+       }
+     ],
+     "env": {
+       "REACT_APP_API_URL": "https://your-backend-domain.com"
+     }
+   }
+   ```
+
+### 3. Deploy via Vercel CLI
+
+1. Install Vercel CLI globally:
+   ```bash
+   npm install -g vercel
+   ```
+
+2. Navigate to the frontend directory:
+   ```bash
+   cd frontend
+   ```
+
+3. Login to Vercel:
+   ```bash
+   vercel login
+   ```
+
+4. Deploy the project:
+   ```bash
+   vercel
+   ```
+
+5. For subsequent deployments to production:
+   ```bash
+   vercel --prod
+   ```
+
+### 4. Deploy via Git Integration
+
+1. Push your code to GitHub/GitLab/Bitbucket
+2. Go to [vercel.com](https://vercel.com) and sign in
+3. Click "New Project"
+4. Import your repository
+5. Configure the project:
+   - Framework Preset: Create React App
+   - Root Directory: frontend
+   - Build Command: `npm run build`
+   - Output Directory: build
+   - Install Command: `npm install`
+
+6. Add environment variables in the Vercel dashboard:
+   - `REACT_APP_API_URL`: Your backend API URL
+   - `REACT_APP_ENVIRONMENT`: production
+
+7. Deploy!
 
 ## Service Management
 
@@ -401,4 +481,4 @@ For deployment issues:
 - [Docker Compose Documentation](https://docs.docker.com/compose/)
 - [PostgreSQL Documentation](https://www.postgresql.org/docs/)
 - [Nginx Documentation](https://nginx.org/en/docs/)
-
+- [Vercel Documentation](https://vercel.com/docs)

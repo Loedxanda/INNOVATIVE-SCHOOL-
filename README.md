@@ -143,6 +143,7 @@ docker-compose exec backend alembic upgrade head
 - [UI/UX Design Specification](UI_UX_DESIGN_SPECIFICATION.md) - Design system guidelines
 - [New Features Implementation](FEATURES_IMPLEMENTATION_SUMMARY.md) - Technical implementation details
 - [New Features Usage Guide](NEW_FEATURES_USAGE_GUIDE.md) - API usage instructions
+- [Vercel Deployment Guide](frontend/VERCEL_DEPLOYMENT.md) - Deploy frontend to Vercel
 
 ## 🏗️ Architecture
 
@@ -242,90 +243,28 @@ docker-compose -f docker-compose.prod.yml up -d
 4. Set up database backups
 5. Configure monitoring and logging
 
-## ☁️ AWS Deployment
+## ☁️ Vercel Deployment (Frontend Only)
+
+For deploying only the frontend to Vercel while keeping the backend on your own server:
 
 ### Prerequisites
-- AWS Account
-- AWS CLI configured
-- Docker installed on deployment machine
+1. A Vercel account (free at [vercel.com](https://vercel.com))
+2. Backend API deployed and accessible via HTTPS
+3. Custom domain (optional but recommended)
 
-### Deployment Steps
+### Quick Deployment
+1. Install Vercel CLI:
+   ```bash
+   npm install -g vercel
+   ```
 
-1. **Prepare Environment**
-```bash
-# Clone repository
-git clone https://github.com/your-org/innovative-school-platform.git
-cd innovative-school-platform
+2. Navigate to frontend directory and deploy:
+   ```bash
+   cd frontend
+   vercel
+   ```
 
-# Configure environment variables
-cp env.example .env
-# Edit .env with production values
-```
-
-2. **Set Up EC2 Instance**
-```bash
-# Launch Ubuntu 20.04 LTS instance
-# Security groups should allow ports 80, 443, 22
-# SSH into instance
-ssh -i your-key.pem ubuntu@your-instance-ip
-```
-
-3. **Install Dependencies on EC2**
-```bash
-# Update system
-sudo apt update && sudo apt upgrade -y
-
-# Install Docker
-sudo apt install docker.io docker-compose -y
-
-# Start Docker service
-sudo systemctl start docker
-sudo systemctl enable docker
-
-# Add user to docker group
-sudo usermod -aG docker $USER
-# Log out and back in for group changes to take effect
-```
-
-4. **Deploy Application**
-```bash
-# Copy application files to EC2 (from your local machine)
-scp -i your-key.pem -r . ubuntu@your-instance-ip:/home/ubuntu/innovative-school-platform
-
-# SSH back into EC2
-ssh -i your-key.pem ubuntu@your-instance-ip
-
-# Navigate to application directory
-cd /home/ubuntu/innovative-school-platform
-
-# Configure environment variables
-nano .env  # Update with production values
-
-# Start services
-docker-compose -f docker-compose.prod.yml up -d
-
-# Initialize database
-docker-compose -f docker-compose.prod.yml exec backend alembic upgrade head
-
-# Create admin user
-docker-compose -f docker-compose.prod.yml exec backend python scripts/create_admin.py
-```
-
-5. **Configure DNS and SSL**
-```bash
-# Point your domain to the EC2 instance IP
-# Set up SSL certificates using Let's Encrypt
-sudo apt install certbot -y
-sudo certbot certonly --standalone -d yourdomain.com
-# Update nginx configuration with SSL certificates
-```
-
-6. **Set Up Monitoring**
-```bash
-# Configure CloudWatch for logs
-# Set up health checks
-# Configure alerts for service downtime
-```
+For detailed instructions, see [Vercel Deployment Guide](frontend/VERCEL_DEPLOYMENT.md).
 
 ## 🖥️ Local PC Deployment
 
