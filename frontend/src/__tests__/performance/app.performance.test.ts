@@ -6,7 +6,7 @@ import App from '../../App';
 
 // Mock the AuthContext
 jest.mock('../../contexts/AuthContext', () => ({
-  AuthProvider: ({ children }: { children: React.ReactNode }) => <div data-testid="auth-provider">{children}</div>,
+  AuthProvider: ({ children }: { children: React.ReactNode }) => React.createElement('div', { 'data-testid': 'auth-provider' }, children),
 }));
 
 // Mock the useAuth hook
@@ -24,18 +24,18 @@ const theme = createTheme();
 
 const renderWithProviders = (component: React.ReactElement) => {
   return render(
-    <BrowserRouter>
-      <ThemeProvider theme={theme}>
-        {component}
-      </ThemeProvider>
-    </BrowserRouter>
+    React.createElement(BrowserRouter, null,
+      React.createElement(ThemeProvider, { theme: theme },
+        component
+      )
+    )
   );
 };
 
 describe('App Performance', () => {
   test('renders without crashing', () => {
     const startTime = performance.now();
-    renderWithProviders(<App />);
+    renderWithProviders(React.createElement(App, null));
     const endTime = performance.now();
     
     const renderTime = endTime - startTime;
@@ -44,7 +44,7 @@ describe('App Performance', () => {
 
   test('component rendering performance', () => {
     const startTime = performance.now();
-    renderWithProviders(<App />);
+    renderWithProviders(React.createElement(App, null));
     const endTime = performance.now();
     
     const renderTime = endTime - startTime;
