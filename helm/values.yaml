@@ -107,17 +107,17 @@ backend:
     targetMemoryUtilizationPercentage: 80
   
   env:
-    DATABASE_URL: "postgresql://postgres:password@postgresql:5432/innovative_school"
+    DATABASE_URL: "postgresql://postgres:$(POSTGRES_PASSWORD)@postgresql:5432/innovative_school"
     REDIS_URL: "redis://redis:6379/0"
     ENVIRONMENT: "production"
     CORS_ORIGINS: "https://innovativeschool.cm,https://www.innovativeschool.cm"
   
   secrets:
-    SECRET_KEY: "your-secret-key-here"
-    JWT_SECRET_KEY: "your-jwt-secret-key-here"
-    GOOGLE_MAPS_API_KEY: "your-google-maps-api-key-here"
-    AWS_ACCESS_KEY_ID: "your-aws-access-key-id-here"
-    AWS_SECRET_ACCESS_KEY: "your-aws-secret-access-key-here"
+    SECRET_KEY: "$(SECRET_KEY)"
+    JWT_SECRET_KEY: "$(JWT_SECRET_KEY)"
+    GOOGLE_MAPS_API_KEY: "$(GOOGLE_MAPS_API_KEY)"
+    AWS_ACCESS_KEY_ID: "$(AWS_ACCESS_KEY_ID)"
+    AWS_SECRET_ACCESS_KEY: "$(AWS_SECRET_ACCESS_KEY)"
 
 # Frontend configuration
 frontend:
@@ -155,7 +155,7 @@ frontend:
 postgresql:
   enabled: true
   auth:
-    postgresPassword: "secure_password_here"
+    postgresPassword: "$(POSTGRES_PASSWORD)"
     database: "innovative_school"
   primary:
     persistence:
@@ -216,7 +216,7 @@ monitoring:
   
   grafana:
     enabled: true
-    adminPassword: "admin123"
+    adminPassword: "$(GRAFANA_ADMIN_PASSWORD)"
     resources:
       limits:
         cpu: 200m
